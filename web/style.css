@@ -1,0 +1,201 @@
+*{
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+
+
+body{
+
+    margin:0;
+    background:#eef2f7;
+
+}
+
+
+
+.container{
+
+    width:100%;
+    min-height:100vh;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+}
+
+
+
+.card{
+
+    background:white;
+
+    width:500px;
+
+    padding:30px;
+
+    border-radius:15px;
+
+    box-shadow:0 5px 20px #0002;
+
+}
+
+
+
+h1,h2{
+
+    text-align:center;
+
+}
+
+
+
+input, textarea{
+
+    width:100%;
+
+    padding:12px;
+
+    margin:10px 0;
+
+    border:1px solid #ccc;
+
+    border-radius:8px;
+
+}
+
+
+
+textarea{
+
+    height:100px;
+
+}
+
+
+
+button{
+
+    width:100%;
+
+    padding:12px;
+
+    margin-top:10px;
+
+    border:none;
+
+    border-radius:8px;
+
+    background:#2563eb;
+
+    color:white;
+
+    cursor:pointer;
+
+}
+
+
+
+button:hover{
+
+    background:#1d4ed8;
+
+}
+
+
+
+.sair{
+
+    background:#dc2626;
+
+    width:120px;
+
+}
+
+
+
+.topo{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+}
+
+
+
+table{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+    margin-top:20px;
+
+}
+
+
+
+th,td{
+
+    border:1px solid #ddd;
+
+    padding:10px;
+
+    text-align:center;
+
+}
+
+
+
+.escondido{
+
+    display:none;
+
+}
+
+
+
+/* MODAL */
+
+
+.modal{
+
+    display:none;
+
+    position:fixed;
+
+    inset:0;
+
+    background:#0008;
+
+    justify-content:center;
+
+    align-items:center;
+
+}
+
+
+
+.modal-box{
+
+    background:white;
+
+    width:350px;
+
+    padding:25px;
+
+    border-radius:12px;
+
+}
+
+
+
+.cancelar{
+
+    background:#777;
+
+}

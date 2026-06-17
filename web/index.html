@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Controle de Turmas</title>
+
+<link rel="stylesheet" href="style.css">
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+
+<!-- LOGIN -->
+
+<div class="card page active" id="login">
+
+
+<h1>Controle de Turmas</h1>
+
+
+<h2>Login do Professor</h2>
+
+
+<input 
+type="email"
+id="email"
+placeholder="E-mail">
+
+
+<input 
+type="password"
+id="senha"
+placeholder="Senha">
+
+
+<button onclick="login()">
+Entrar
+</button>
+
+
+<p id="mensagem"></p>
+
+
+</div>
+
+
+
+
+
+
+<!-- PROFESSOR -->
+
+
+<div class="card page escondido" id="professor">
+
+
+<div class="topo">
+
+
+<h2>
+Olá,
+<span id="nomeProfessor"></span>
+</h2>
+
+
+<button class="sair" onclick="logout()">
+Sair
+</button>
+
+
+</div>
+
+
+
+<button onclick="abrirModalTurma()">
++ Cadastrar Turma
+</button>
+
+
+
+<h2>Minhas Turmas</h2>
+
+
+<table>
+
+
+<thead>
+
+<tr>
+
+<th>Número</th>
+
+<th>Nome da Turma</th>
+
+<th>Ações</th>
+
+
+</tr>
+
+
+</thead>
+
+
+<tbody id="listaTurmas">
+
+
+</tbody>
+
+
+</table>
+
+
+</div>
+
+
+
+
+
+
+
+
+<!-- ATIVIDADES -->
+
+
+<div class="card page escondido" id="atividades">
+
+
+<div class="topo">
+
+
+<h2>
+Turma:
+<span id="nomeTurma"></span>
+</h2>
+
+
+<button class="sair" onclick="logout()">
+Sair
+</button>
+
+
+</div>
+
+
+
+<button onclick="abrirModalAtividade()">
++ Cadastrar Atividade
+</button>
+
+
+
+<h2>Atividades</h2>
+
+
+
+<table>
+
+
+<thead>
+
+<tr>
+
+<th>Número</th>
+
+<th>Descrição</th>
+
+
+</tr>
+
+</thead>
+
+
+
+<tbody id="listaAtividades">
+
+
+</tbody>
+
+
+</table>
+
+
+
+<button onclick="showPage('professor')">
+Voltar
+</button>
+
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+<!-- MODAL TURMA -->
+
+
+<div class="modal" id="modalTurma">
+
+
+<div class="modal-box">
+
+
+<h2>Cadastrar Turma</h2>
+
+
+<input
+id="nomeTurma"
+placeholder="Nome da turma">
+
+
+
+<button onclick="adicionarTurma()">
+
+Cadastrar
+
+</button>
+
+
+
+<button onclick="fecharModalTurma()">
+
+Cancelar
+
+</button>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+
+<!-- MODAL ATIVIDADE -->
+
+
+<div class="modal" id="modalAtividade">
+
+
+<div class="modal-box">
+
+
+<h2>Cadastrar Atividade</h2>
+
+
+
+<textarea
+id="descricao"
+placeholder="Descrição da atividade">
+</textarea>
+
+
+
+
+<button onclick="adicionarAtividade()">
+
+Cadastrar
+
+</button>
+
+
+
+<button onclick="fecharModalAtividade()">
+
+Cancelar
+
+</button>
+
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+<!-- MODAL EXCLUSÃO -->
+
+
+<div class="modal" id="modalDelete">
+
+
+<div class="modal-box">
+
+
+<h2>Confirmação</h2>
+
+
+<p id="textoDelete"></p>
+
+
+
+<button onclick="confirmarExcluir()">
+
+Excluir
+
+</button>
+
+
+
+<button onclick="fecharDelete()">
+
+Cancelar
+
+</button>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+<script src="script.js"></script>
+
+
+</body>
+
+</html>

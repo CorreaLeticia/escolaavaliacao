@@ -4,50 +4,55 @@ const cors = require("cors");
 
 const app = express();
 
+app.use(express.json());
 
 app.use(cors({
+    origin: "http://127.0.0.1:5500",
+    credentials: true
+}));
 
-    origin:[
-        "http://127.0.0.1:5500",
-        "http://localhost:5500"
-    ],
+app.use(session({
 
-    credentials:true
+    secret: "saep-escola",
+
+    resave: false,
+
+    saveUninitialized: false,
+
+    cookie: {
+        secure: false,
+        httpOnly: true,
+        sameSite: "lax"
+    }
 
 }));
 
 
-app.use(express.json());
+const professorRoutes =
+require("./src/routes/professor.routes");
+
+const turmaRoutes =
+require("./src/routes/turma.routes");
+
+const atividadeRoutes =
+require("./src/routes/atividade.routes");
 
 
-app.use(
-    session({
+app.use((req,res,next)=>{
 
-        secret:"saep-escola",
+    console.log(
+        "SESSION:",
+        req.session
+    );
 
-        resave:false,
+    next();
 
-        saveUninitialized:false,
-
-        cookie:{
-            secure:false
-        }
-
-    })
-);
-
-
-
-const professorRoutes = require("./src/routes/professor.routes");
-const turmaRoutes = require("./src/routes/turma.routes");
-const atividadeRoutes = require("./src/routes/atividade.routes");
-
+});
 
 
 app.use("/professores", professorRoutes);
 app.use("/turmas", turmaRoutes);
 app.use("/atividades", atividadeRoutes);
-
 
 
 app.get("/",(req,res)=>{
@@ -59,9 +64,10 @@ app.get("/",(req,res)=>{
 });
 
 
-
 app.listen(3000,()=>{
 
-    console.log("Servidor rodando na porta 3000");
+    console.log(
+        "Servidor rodando na porta 3000"
+    );
 
 });

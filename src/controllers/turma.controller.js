@@ -1,133 +1,192 @@
 const prisma = require("../data/prisma");
 
+const cadastrar = async (req,res)=>{
 
-// CADASTRAR TURMA
-const cadastrar = async(req,res)=>{
+    try{
 
+        console.log(
+            "SESSÃO CADASTRAR:",
+            req.session
+        );
 
-    const {nome}=req.body;
+        if(!req.session.professorId){
 
+            return res.status(401).json({
+                mensagem:"Professor não autenticado"
+            });
 
-    const turma = await prisma.turma.create({
-
-        data:{
-            nome,
-            professorId:req.session.professorId
         }
 
-    });
+        const {nome}=req.body;
 
+        const turma =
+        await prisma.turma.create({
 
-    res.status(201).json(turma);
+            data:{
+                nome,
+                professorId:
+                req.session.professorId
+            }
+
+        });
+
+        res.status(201).json(turma);
+
+    }catch(erro){
+
+        console.log(
+            "Erro cadastrar turma:",
+            erro
+        );
+
+        res.status(500).json({
+            mensagem:"Erro ao cadastrar turma"
+        });
+
+    }
 
 };
 
-
-
-
-// LISTAR TURMAS DO PROFESSOR
 const listar = async(req,res)=>{
 
+    try{
 
-    const turmas = await prisma.turma.findMany({
+        console.log(
+            "SESSÃO LISTAR:",
+            req.session
+        );
 
-        where:{
-            professorId:req.session.professorId
+        if(!req.session.professorId){
+
+            return res.status(401).json({
+
+                mensagem:
+                "Sem sessão"
+
+            });
+
         }
 
-    });
+        const turmas =
+        await prisma.turma.findMany({
 
+            where:{
+                professorId:
+                req.session.professorId
+            }
 
-    res.status(200).json(turmas);
+        });
 
-};
+        res.status(200).json(
+            turmas
+        );
 
+    }catch(erro){
 
+        console.log(
+            "Erro listar:",
+            erro
+        );
 
-
-
-// VISUALIZAR TURMA
-const buscar = async(req,res)=>{
-
-
-    const {id}=req.params;
-
-
-    const turma = await prisma.turma.findUnique({
-
-        where:{
-            id:Number(id)
-        }
-
-    });
-
-
-    res.status(200).json(turma);
-
-};
-
-
-
-
-
-// EXCLUIR TURMA
-const excluir = async(req,res)=>{
-
-
-    const {id}=req.params;
-
-
-
-    const atividades = await prisma.atividade.count({
-
-        where:{
-            turmaId:Number(id)
-        }
-
-    });
-
-
-
-    if(atividades > 0){
-
-        return res.status(400).json({
+        res.status(500).json({
 
             mensagem:
-            "Você não pode excluir uma turma com atividades cadastradas"
+            "Erro"
 
         });
 
     }
 
+};
 
+const buscar = async(req,res)=>{
 
+    try{
 
-    await prisma.turma.delete({
+        const {id}=req.params;
 
-        where:{
-            id:Number(id)
+        const turma =
+        await prisma.turma.findUnique({
+
+            where:{
+                id:Number(id)
+            }
+
+        });
+
+        res.status(200).json(turma);
+
+    }catch(erro){
+
+        console.log(erro);
+
+        res.status(500).json({
+            mensagem:"Erro"
+        });
+
+    }
+
+};
+
+const excluir = async(req,res)=>{
+
+    try{
+
+        const {id}=req.params;
+
+        const atividades =
+        await prisma.atividade.count({
+
+            where:{
+                turmaId:Number(id)
+            }
+
+        });
+
+        if(atividades>0){
+
+            return res.status(400).json({
+
+                mensagem:
+                "Você não pode excluir uma turma com atividades cadastradas"
+
+            });
+
         }
 
-    });
+        await prisma.turma.delete({
 
+            where:{
+                id:Number(id)
+            }
 
+        });
 
-    res.status(200).json({
+        res.status(200).json({
 
-        mensagem:"Turma excluída com sucesso"
+            mensagem:
+            "Turma excluída"
 
-    });
+        });
 
+    }catch(erro){
+
+        console.log(erro);
+
+        res.status(500).json({
+
+            mensagem:"Erro"
+
+        });
+
+    }
 
 };
 
 
-
-
-
 module.exports={
-    cadastrar,
-    listar,
-    buscar,
-    excluir
+cadastrar,
+listar,
+buscar,
+excluir
 };

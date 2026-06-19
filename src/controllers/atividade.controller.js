@@ -1,8 +1,5 @@
 const prisma = require("../data/prisma");
 
-
-
-// CADASTRAR ATIVIDADE
 const cadastrar = async(req,res)=>{
 
 
@@ -25,11 +22,6 @@ const cadastrar = async(req,res)=>{
 
 };
 
-
-
-
-
-// LISTAR ATIVIDADES DA TURMA
 const listar = async(req,res)=>{
 
 
@@ -45,15 +37,9 @@ const listar = async(req,res)=>{
 
     });
 
-
-
     res.status(200).json(atividades);
 
 };
-
-
-
-
 
 module.exports={
 

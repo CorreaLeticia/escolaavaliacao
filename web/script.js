@@ -1,464 +1,208 @@
-const API = "http://localhost:3000";
-
-
+const API = "http://127.0.0.1:3000";
 let turmaSelecionada = null;
 
-
-
-// =================
-// TROCAR TELAS
-// =================
-
 function showPage(page){
+  document.querySelectorAll(".page").forEach(tela=>{
+    tela.classList.add("escondido");
+  });
 
-    document
-    .querySelectorAll(".page")
-    .forEach(tela=>{
-        tela.classList.add("escondido");
-    });
-
-
-    document
-    .getElementById(page)
-    .classList.remove("escondido");
-
-
+  document.getElementById(page).classList.remove("escondido");
 }
 
+function abrirModalTurma(){
+  document.getElementById("modalTurma").style.display="flex";
+}
 
+function fecharModalTurma(){
+  document.getElementById("modalTurma").style.display="none";
+}
 
-// =================
-// LOGIN
-// =================
+function abrirModalAtividade(){
+  document.getElementById("modalAtividade").style.display="flex";
+}
 
+function fecharModalAtividade(){
+  document.getElementById("modalAtividade").style.display="none";
+}
+
+function adicionarTurma(){
+  cadastrarTurma();
+}
+
+function adicionarAtividade(){
+  cadastrarAtividade();
+}
 
 async function login(){
+  const email = document.getElementById("email").value;
+  const senha = document.getElementById("senha").value;
 
+  const resposta = await fetch(`${API}/professores/login`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    credentials: "include",
+    body: JSON.stringify({
+      email,
+      senha
+    })
+  });
 
-    const email =
-    document.getElementById("email").value;
+  if(resposta.ok){
+    const professor = await resposta.json();
 
+    document.getElementById("nomeProfessor").innerText = professor.nome;
 
-    const senha =
-    document.getElementById("senha").value;
+    showPage("professor");
 
-
-
-    const resposta =
-    await fetch(`${API}/professores/login`,{
-
-
-        method:"POST",
-
-
-        headers:{
-            "Content-Type":"application/json"
-        },
-
-
-        credentials:"include",
-
-
-        body:JSON.stringify({
-            email,
-            senha
-        })
-
-
-    });
-
-
-
-    if(resposta.ok){
-
-
-        const professor =
-        await resposta.json();
-
-
-
-        document
-        .getElementById("nomeProfessor")
-        .innerText = professor.nome;
-
-
-
-        showPage("professor");
-
-
-        carregarTurmas();
-
-
-
-    }else{
-
-
-        alert("Email ou senha inválidos");
-
-
-    }
-
-
+    await carregarTurmas();
+  } else {
+    alert("Email ou senha inválidos");
+  }
 }
-
-
-
-
-
-// =================
-// TURMAS
-// =================
-
 
 async function carregarTurmas(){
+  const resposta = await fetch(`${API}/turmas`, {
+    credentials: "include"
+  });
 
+  const turmas = await resposta.json();
 
-    const resposta =
-    await fetch(`${API}/turmas`,{
+  const tabela = document.getElementById("listaTurmas");
+  tabela.innerHTML = "";
 
-
-        credentials:"include"
-
-
-    });
-
-
-
-    const turmas =
-    await resposta.json();
-
-
-
-    const tabela =
-    document.getElementById("listaTurmas");
-
-
-
-    tabela.innerHTML="";
-
-
-
-    turmas.forEach((turma,index)=>{
-
-
-        tabela.innerHTML += `
-
-
-        <tr>
-
-        <td>${index+1}</td>
-
-
+  turmas.forEach((turma)=>{
+    tabela.innerHTML += `
+      <tr>
+        <td>${turma.id}</td>
         <td>${turma.nome}</td>
-
-
         <td>
+          <button class="visualizar" onclick="verAtividades(${turma.id}, '${turma.nome}')">
+            Visualizar
+          </button>
 
-
-        <button onclick="verAtividades(${turma.id}, '${turma.nome}')">
-        Visualizar
-        </button>
-
-
-        <button onclick="excluirTurma(${turma.id})">
-        Excluir
-        </button>
-
-
+          <button class="excluir" onclick="excluirTurma(${turma.id})">
+            Excluir
+          </button>
         </td>
-
-
-        </tr>
-
-
-        `;
-
-
-    });
-
-
-
+      </tr>
+    `;
+  });
 }
-
-
-
-
-// =================
-// CADASTRAR TURMA
-// =================
-
 
 async function cadastrarTurma(){
+  const nome = document.getElementById("inputTurma").value;
 
+  if(!nome){
+    alert("Digite o nome da turma");
+    return;
+  }
 
-    const nome =
-    document.getElementById("nomeTurma").value;
+  await fetch(`${API}/turmas`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    credentials: "include",
+    body: JSON.stringify({ nome })
+  });
 
+  document.getElementById("inputTurma").value = "";
 
+  fecharModalTurma();
 
-    await fetch(`${API}/turmas`,{
-
-
-        method:"POST",
-
-
-        headers:{
-            "Content-Type":"application/json"
-        },
-
-
-        credentials:"include",
-
-
-        body:JSON.stringify({
-
-            nome
-
-        })
-
-
-    });
-
-
-
-    fecharModalTurma();
-
-
-    carregarTurmas();
-
-
+  await carregarTurmas();
 }
-
-
-
-
-
-
-// =================
-// EXCLUIR TURMA
-// =================
-
 
 async function excluirTurma(id){
+  if(!confirm("Deseja excluir?")) return;
 
+  const resposta = await fetch(`${API}/turmas/${id}`, {
+    method: "DELETE",
+    credentials: "include"
+  });
 
-    if(!confirm("Deseja excluir essa turma?"))
-        return;
-
-
-
-    const resposta =
-    await fetch(`${API}/turmas/${id}`,{
-
-
-        method:"DELETE",
-
-
-        credentials:"include"
-
-
-    });
-
-
-
-    const retorno =
-    await resposta.json();
-
-
-
-    if(!resposta.ok){
-
-
-        alert(retorno.mensagem);
-
-
-    }else{
-
-
-        carregarTurmas();
-
-
-    }
-
-
+  if(resposta.ok){
+    await carregarTurmas();
+  } else {
+    alert("Não é possível excluir turma com atividades cadastradas");
+  }
 }
 
+async function verAtividades(id, nome){
+  turmaSelecionada = id;
 
+  document.getElementById("tituloTurma").innerText = nome;
 
+  showPage("atividades");
 
-
-
-
-// =================
-// ATIVIDADES
-// =================
-
-
-async function verAtividades(id,nome){
-
-
-    turmaSelecionada=id;
-
-
-
-    document
-    .getElementById("nomeTurma")
-    .innerText=nome;
-
-
-
-    showPage("atividades");
-
-
-
-    carregarAtividades();
-
-
+  await carregarAtividades();
 }
-
-
-
-
-
-
 
 async function carregarAtividades(){
+  const resposta = await fetch(`${API}/atividades/${turmaSelecionada}`, {
+    credentials: "include"
+  });
 
+  const atividades = await resposta.json();
 
+  const tabela = document.getElementById("listaAtividades");
+  tabela.innerHTML = "";
 
-    const resposta =
-    await fetch(
-        `${API}/atividades/${turmaSelecionada}`,
-        {
-            credentials:"include"
-        }
-    );
-
-
-
-    const atividades =
-    await resposta.json();
-
-
-
-    const tabela =
-    document.getElementById("listaAtividades");
-
-
-
-    tabela.innerHTML="";
-
-
-
-    atividades.forEach((atividade,index)=>{
-
-
-        tabela.innerHTML += `
-
-
-        <tr>
-
-        <td>${index+1}</td>
-
-
+  atividades.forEach((atividade)=>{
+    tabela.innerHTML += `
+      <tr>
+        <td>${atividade.id}</td>
         <td>${atividade.descricao}</td>
-
-
-        </tr>
-
-
-        `;
-
-
-    });
-
-
+        <td>
+          <button class="excluir" onclick="excluirAtividade(${atividade.id})">
+            Excluir
+          </button>
+        </td>
+      </tr>
+    `;
+  });
 }
-
-
-
-
-
-// =================
-// CADASTRAR ATIVIDADE
-// =================
-
 
 async function cadastrarAtividade(){
+  const descricao = document.getElementById("descricao").value;
 
+  await fetch(`${API}/atividades`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    credentials: "include",
+    body: JSON.stringify({
+      descricao,
+      turmaId: turmaSelecionada
+    })
+  });
 
+  document.getElementById("descricao").value = "";
 
-    const descricao =
-    document.getElementById("descricao")
-    .value;
+  fecharModalAtividade();
 
-
-
-    await fetch(`${API}/atividades`,{
-
-
-        method:"POST",
-
-
-        headers:{
-            "Content-Type":"application/json"
-        },
-
-
-        credentials:"include",
-
-
-        body:JSON.stringify({
-
-            descricao,
-
-            turmaId:turmaSelecionada
-
-        })
-
-
-    });
-
-
-
-    fecharModalAtividade();
-
-
-    carregarAtividades();
-
-
-
+  await carregarAtividades();
 }
 
+async function excluirAtividade(id){
+  if(!confirm("Deseja excluir esta atividade?")) return;
 
+  await fetch(`${API}/atividades/${id}`, {
+    method: "DELETE",
+    credentials: "include"
+  });
 
-
-
-
-
-// =================
-// LOGOUT
-// =================
-
+  await carregarAtividades();
+}
 
 async function logout(){
+  await fetch(`${API}/professores/logout`, {
+    method: "POST",
+    credentials: "include"
+  });
 
-
-
-    await fetch(
-        `${API}/professores/logout`,
-        {
-
-        method:"POST",
-
-        credentials:"include"
-
-        }
-    );
-
-
-
-    showPage("login");
-
-
+  showPage("login");
 }
